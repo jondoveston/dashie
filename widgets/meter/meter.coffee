@@ -6,6 +6,10 @@ class Dashing.Meter extends Dashing.Widget
     super
     @observe 'value', (value) ->
       $(@node).find(".meter").val(value).trigger('change')
+    @observe 'max', (max) ->
+      $(@node).find(".meter").trigger('configure', {'max': max})
+    @observe 'min', (min) ->
+      $(@node).find(".meter").trigger('configure', {'min': max})
 
   ready: ->
     meter = $(@node).find(".meter")

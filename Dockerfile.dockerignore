@@ -1,0 +1,12 @@
+.git*
+.bundle
+.db
+tmp/*
+Dockerfile*
+docker-compose.yml
+Makefile*
+README.md
+env.*
+.env
+history.yml
+vendor

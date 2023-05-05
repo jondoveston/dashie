@@ -1,0 +1,15 @@
+version: '3'
+services:
+  dashie_app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: dashie_app
+    command: bash -c "(bundle check || bundle install) && bundle exec smashing start -p 3000 -e development -a 0.0.0.0"
+    volumes:
+      - .:/src
+    environment:
+      - BUNDLE_PATH=/src/vendor/bundle
+      - PROMETHEUS=http://prometheus.lan/api/v1/query
+    ports:
+      - 3000:3000

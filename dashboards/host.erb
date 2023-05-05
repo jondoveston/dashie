@@ -1,0 +1,39 @@
+<script type='text/javascript'>
+$(function() {
+  // These settings override the defaults set in application.coffee. You can do this on a per dashboard basis.
+  Dashing.gridsterLayout('[{"col":1,"row":1,"size_x":1,"size_y":1},{"col":2,"row":1,"size_x":1,"size_y":1},{"col":3,"row":1,"size_x":1,"size_y":1},{"col":1,"row":2,"size_x":1,"size_y":1},{"col":2,"row":2,"size_x":1,"size_y":1},{"col":3,"row":2,"size_x":1,"size_y":1},{"col":1,"row":3,"size_x":1,"size_y":1},{"col":2,"row":3,"size_x":1,"size_y":1},{"col":3,"row":3,"size_x":1,"size_y":1}]')
+
+  Dashing.widget_base_dimensions = [240, 240]
+  Dashing.numColumns = 3
+});
+</script>
+
+
+<% content_for :title do %>hyperpixel dashboard<% end %>
+
+<div class="gridster hyperpixel">
+  <ul>
+    <% metrics = CONFIG.fetch(params[:host]) %>
+    <% metrics.fill(nil, (metrics.length)...9) %>
+    <% (metrics[0..3] + [nil] + metrics[4..7]).each_with_index do |metric, index| %>
+    <li data-row="1" data-col="1" data-sizex="1" data-sizey="1">
+      <% if index == 4 %>
+        <a class="widget" href="/systems">
+        <div class="fa-sm" data-view="Clock"></div>
+        <i class="far fa-clock icon-background"></i>
+        </a>
+      <% else %>
+      <% case metric; when 'mem_used' %>
+      <div data-id="<%= params[:host] %>_<%= metric %>" data-view="Meter" data-title="<%= metric.upcase %>" data-min="0" data-max="100" data-suffix="G"></div>
+      <% when 'cpu_used' %>
+      <div data-id="<%= params[:host] %>_<%= metric %>" data-view="Meter" data-title="<%= metric.upcase %>" data-min="0" data-max="100" data-suffix="%"></div>
+      <% when /^load\d*$/ %>
+      <div data-id="<%= params[:host] %>_<%= metric %>" data-view="Meter" data-title="<%= metric.upcase %>" data-min="0" data-max="100" data-suffix=""></div>
+      <% when 'root', 'home', 'tank', 'pool' %>
+      <div data-id="<%= params[:host] %>_<%= metric %>" data-view="Meter" data-title="<%= metric.upcase %>" data-min="0" data-max="100" data-suffix="%"></div>
+      <% end %>
+      <% end %>
+    </li>
+    <% end %>
+  </ul>
+</div>

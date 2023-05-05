@@ -1,0 +1,36 @@
+APP_NAME = dashie
+
+APP_VERSION ?= $(shell git describe --tags --always)
+COMMIT ?= $(shell git rev-parse --short HEAD 2>/dev/null)
+BRANCH ?= $(shell git symbolic-ref --short HEAD 2>/dev/null)
+TAGS = $(shell docker image inspect --format='{{ join .RepoTags " " }}' $(CONTAINER_NAME):$(APP_VERSION))
+CONTAINER_NAME = ghcr.io/jondoveston/$(APP_NAME)
+EXTRA_ARGS ?=
+
+with_commit:
+ifneq (${COMMIT},)
+	@echo -n $(eval EXTRA_ARGS += -t $(CONTAINER_NAME):$(COMMIT))
+endif
+
+with_latest:
+	@echo -n $(eval EXTRA_ARGS += -t $(CONTAINER_NAME):latest)
+
+clean:
+	@echo -n $(eval EXTRA_ARGS += --force-rm --no-cache --pull)
+
+debug:
+	@echo -n $(eval EXTRA_ARGS += --progress plain)
+
+version:
+	@echo $(APP_VERSION)
+
+image:
+	DOCKER_BUILDKIT=1 docker build $(EXTRA_ARGS) -t $(CONTAINER_NAME):$(APP_VERSION) --build-arg APP_VERSION=$(APP_VERSION) -f Dockerfile .
+
+push:
+	for tag in $(TAGS) ; do \
+	  docker push $$tag ; \
+	done
+
+bash:
+	docker run -it  --entrypoint="" $(CONTAINER_NAME):$(APP_VERSION) bash

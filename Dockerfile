@@ -18,7 +18,7 @@ WORKDIR $APP_DIR
 RUN chown ${UID}:${GID} ${APP_DIR}
 
 # This is required to install the other dependencies
-RUN apt-get update && apt-get install -y tini gnupg curl apt-transport-https \
+RUN apt-get update && apt-get install -y tini gnupg curl apt-transport-https nodejs \
 	&& rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /var/log/*.log /var/cache/debconf/*-old
 
 ENV BUNDLE_PATH vendor/bundle
